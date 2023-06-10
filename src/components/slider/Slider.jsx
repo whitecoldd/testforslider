@@ -6,9 +6,10 @@ import "./slider.css";
 export default function Slider(props) {
   const { slides } = props;
   const [currentSlide, setCurrentSlide] = useState(0);
-
   const prevSlide = () => {
-    setCurrentSlide(currentSlide === 0 ? 2 : (prev) => prev - 1);
+    setCurrentSlide(
+      currentSlide === 0 ? slides.length - 1 : (prev) => prev - 1
+    );
   };
   const nextSlide = useCallback(() => {
     setCurrentSlide(
@@ -28,16 +29,28 @@ export default function Slider(props) {
     <div className="slidercontainer">
       <div
         className="sliderwrapper"
-        style={{ transform: `translateX(-${currentSlide * 100}vw)` }}
+        style={{
+          width: `${slides.length * 100}%`,
+          transform: `translateX(-${(currentSlide * 100) / slides.length}%)`,
+        }}
       >
         {slides.map((slide) => (
-          <div key={slide.id} className="slidercontent">
+          <div
+            key={slide.id}
+            className="slidercontent"
+            style={{ width: `${100 / slides.length}%` }}
+          >
             {slide.content}
           </div>
         ))}
       </div>
       <div className="arrowcontainer">
         <AiOutlineArrowLeft className="arrow" onClick={prevSlide} />
+        <input
+          type="number"
+          value={currentSlide}
+          onChange={(e) => setCurrentSlide(e.target.value)}
+        />
         <AiOutlineArrowRight className="arrow" onClick={nextSlide} />
       </div>
     </div>
